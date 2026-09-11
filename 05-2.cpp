@@ -1,4 +1,6 @@
 #include <numeric>
+#include <algorithm> // for std::min/max
+#include <iterator> // for std::next
 
 #include "common.hpp"
 

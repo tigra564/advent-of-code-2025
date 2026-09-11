@@ -1,5 +1,5 @@
-#ifndef _10_COMMON_HPP
-#define _10_COMMON_HPP
+#ifndef AOC_10_COMMON_HPP
+#define AOC_10_COMMON_HPP
 
 #include <sstream>
 #include <functional>
@@ -30,4 +30,4 @@ struct Machine {
 
 std::ostream& operator<<(std::ostream& os, const Machine& machine);
 
-#endif //_10_COMMON_HPP
+#endif //AOC_10_COMMON_HPP

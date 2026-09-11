@@ -1,5 +1,5 @@
-#ifndef _11_COMMON_HPP
-#define _11_COMMON_HPP
+#ifndef AOC_11_COMMON_HPP
+#define AOC_11_COMMON_HPP
 
 #include <sstream>
 
@@ -9,4 +9,4 @@ using Connections = std::map<std::string, std::set<std::string>>;
 
 Connections parse_connections(std::ifstream& file);
 
-#endif //_11_COMMON_HPP
+#endif //AOC_11_COMMON_HPP

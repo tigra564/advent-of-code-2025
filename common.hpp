@@ -1,5 +1,5 @@
-#ifndef COMMON_HPP
-#define COMMON_HPP
+#ifndef AOC_COMMON_HPP
+#define AOC_COMMON_HPP
 
 #include <iostream>
 #include <fstream>
@@ -65,4 +65,4 @@ std::ostream& operator<<(std::ostream& os, const std::map<T1, T2>& map) {
 	return os;
 }
 
-#endif //COMMON_HPP
+#endif //AOC_COMMON_HPP

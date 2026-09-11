@@ -1,5 +1,5 @@
-#ifndef _08_COMMON_HPP
-#define _08_COMMON_HPP
+#ifndef AOC_08_COMMON_HPP
+#define AOC_08_COMMON_HPP
 
 #include <sstream>
 #include <unordered_map>
@@ -37,4 +37,4 @@ struct jb_dist {
 std::vector<jb_dist> get_distances(const Jboxes& jboxes);
 std::pair<Clusters, jb_dist> form_clusters(const std::vector<jb_dist>& distances, std::size_t max_jboxes);
 
-#endif //_08_COMMON_HPP
+#endif //AOC_08_COMMON_HPP

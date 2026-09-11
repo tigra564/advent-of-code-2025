@@ -4,21 +4,7 @@
 
 bool intervals_overlap(const std::pair<i64, i64>& one, const std::pair<i64, i64>& two) noexcept
 {
-	// Either left of pair one is inside pair two or adjacent to pair two from right or...
-	// the same for left of pair two wrt pair one
-	if (
-		(two.first <= one.first && one.first <= two.second + 1) ||
-		(one.first <= two.first && two.first <= one.second + 1)
-	)
-		return true;
-	// The same for right sides
-	if (
-		(two.first - 1 <= one.second && one.second <= two.second) ||
-		(one.first - 1 <= two.second && two.second <= one.second)
-	)
-		return true;
-
-	return false;
+	return std::max(one.first, two.first) <= std::min(one.second, two.second) + 1;
 }
 
 

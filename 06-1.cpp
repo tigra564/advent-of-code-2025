@@ -12,9 +12,8 @@ int main(int argc, char* argv[])
 	std::vector<std::vector<i64>> numbers;
 	std::vector<std::pair<i64, std::function<i64(i64, i64)>>> ops;
 
-	auto nproblems = 0U;
+	std::size_t nproblems = 0;
 	while (std::getline(file, record)) {
-		//std::cout << record << '\n';
 		std::string field;
 
 		if (0 == nproblems) {
@@ -27,15 +26,15 @@ int main(int argc, char* argv[])
 		}
 
 		std::stringstream rec(record);
-		auto i = 0;
+		std::size_t i = 0;
 		while (rec >> field) {
 			auto sym = field[0];
 			switch (sym) {
 			case '*':
-				ops.emplace_back(1ULL, std::multiplies<i64>());
+				ops.emplace_back(i64{1}, std::multiplies<i64>());
 				break;
 			case '+':
-				ops.emplace_back(0ULL, std::plus<i64>());
+				ops.emplace_back(i64{0}, std::plus<i64>());
 				break;
 			default:
 				numbers[i].emplace_back(std::stoll(field));
@@ -44,8 +43,7 @@ int main(int argc, char* argv[])
 		}
 	}
 
-	auto result = 0LL;
-	std::vector<i64> partials;
+	auto result = i64{0};
 	for (std::size_t i = 0; i < nproblems; i++) {
 		result += std::accumulate(numbers[i].begin(), numbers[i].end(),
 			ops[i].first, ops[i].second);

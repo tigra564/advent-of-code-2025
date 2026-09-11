@@ -20,7 +20,7 @@ i64 num_paths_impl(const std::vector<std::string>& diagram, int row, int col, Me
 	}
 
 	for (std::size_t i = row; i < diagram.size(); i++) {
-		auto line = diagram[i];
+		const auto& line = diagram[i];
 		if ('^' != line[col])
 			continue;
 
@@ -37,7 +37,7 @@ i64 num_paths_impl(const std::vector<std::string>& diagram, int row, int col, Me
 }
 
 
-i64 num_paths(const std::vector<std::string> &diagram, int row, int col) noexcept
+i64 num_paths(const std::vector<std::string>& diagram, int row, int col) noexcept
 {
 	Memo memo;
 	return num_paths_impl(diagram, row, col, memo);
@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
 		diagram.emplace_back(record);
 	}
 
-	int row = 2;
+	int row = 1;
 	int col = diagram[0].find('S');
 	auto result = num_paths(diagram, row, col);
 

@@ -10,9 +10,8 @@ int main(int argc, char* argv[])
 	auto spos = record.find('S');
 	beams[spos] = '|';
 
-	auto result = 0ULL;
+	auto result = i64{0};
 	while (file >> record) {
-		//std::cout << record << '\n';
 		for (std::size_t i = 0; i < record.size(); i++) {
 			if ('^' == record[i] && '|' == beams[i]) {
 				result++;

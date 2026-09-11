@@ -84,7 +84,7 @@ std::pair<Clusters, jb_dist> form_clusters(const std::vector<jb_dist>& distances
 		auto& ptshi = clusters[hi].points;
 
 		ptslo.insert(ptslo.end(), ptshi.begin(), ptshi.end());
-		ptshi.resize(0);
+		ptshi.clear();
 		clusters[hi].moved_to = lo;
 
 		if (d.first != lo)

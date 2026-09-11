@@ -19,7 +19,6 @@ Jboxes parse_jboxes(std::ifstream& file)
 	std::string record;
 
 	while (file >> record) {
-		//std::cout << record << '\n';
 
 		std::stringstream ss(record);
 		std::array<i64, 3> jbox;
@@ -31,7 +30,6 @@ Jboxes parse_jboxes(std::ifstream& file)
 
 		jboxes.emplace_back(jbox);
 	}
-	//std::cout << '\n';
 
 	return jboxes;
 }
@@ -52,11 +50,6 @@ std::vector<jb_dist> get_distances(const Jboxes& jboxes)
 			distances.emplace_back(jb_dist{dist, static_cast<int>(i), static_cast<int>(j)});
 		}
 	}
-	/*
-	for (const auto& d : distances)
-		std::cout << d.first << " " << d.second << '\n';
-	std::cout << '\n';
-	*/
 	
 	return distances;
 }
@@ -74,8 +67,6 @@ std::pair<Clusters, jb_dist> form_clusters(const std::vector<jb_dist>& distances
 	for (; it != distances.end(); it++) {
 		const auto& d = *it;
 		int lo = d.first, hi = d.second;
-
-		//std::cout << lo << "<->" << hi << '\n';
 
 		while (-1 != clusters[lo].moved_to)
 			lo = clusters[lo].moved_to;
@@ -101,8 +92,6 @@ std::pair<Clusters, jb_dist> form_clusters(const std::vector<jb_dist>& distances
 
 		if (d.second != lo)
 			clusters[d.second].moved_to = lo;
-
-		//std::cout << clusters << '\n';
 
 		if (max_jboxes == clusters[lo].points.size())
 			break;

@@ -14,7 +14,7 @@ int main(int argc, char* argv[])
 	std::partial_sort(distances.begin(), distances.begin() + nconns, distances.end());
 	distances.resize(nconns);
 
-	auto [clusters, last_distance] = form_clusters(distances, jbsz);
+	auto [clusters, _] = form_clusters(distances, jbsz);
 
 	std::vector<int> sizes;
 	sizes.reserve(clusters.size());
@@ -25,7 +25,6 @@ int main(int argc, char* argv[])
 	std::partial_sort(sizes.begin(), sizes.begin() + 3, sizes.end(),
 		[](auto a, auto b) { return a > b; }
 	);
-	//std::cout << sizes << '\n';
 
 	auto result = sizes[0] * sizes[1] * sizes[2];
 	std::cout << "Result: " << result << '\n';

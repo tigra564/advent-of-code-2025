@@ -4,17 +4,17 @@
 
 int remove(std::vector<std::string>& grid) noexcept
 {
+	constexpr int threshold = 4;
 	const std::vector<std::pair<int, int>> directions = {
 		{-1, -1}, {-1, 0}, {-1, 1},
 		{ 0, -1},          { 0, 1},
 		{ 1, -1}, { 1, 0}, { 1, 1}
 	};
 
-	auto count = 0UL;
+	auto count = 0;
 	for (std::size_t i = 1; i < grid.size() - 1; i++) {
 		for (std::size_t j = 1; j < grid[i].size() - 1; j++) {
 			if (grid[i][j] != '@') {
-				//std::cout << '.';
 				continue;
 			}
 
@@ -25,13 +25,11 @@ int remove(std::vector<std::string>& grid) noexcept
 				}
 			);
 
-			if (num < 4) {
+			if (num < threshold) {
 				count++;
 				grid[i][j] = 'X';
 			}
-			//std::cout << (num < 4 ? 'X' : '@');
 		}
-		//std::cout << '\n';
 	}
 
 	for (std::size_t i = 1; i < grid.size() - 1; i++) {
@@ -62,7 +60,6 @@ int main(int argc, char* argv[])
 	auto result = 0;
 	while (auto num = remove(grid)) {
 		result += num;
-		//std::cout << '\n';
 	}
 
 	std::cout << "Result: " << result << '\n';

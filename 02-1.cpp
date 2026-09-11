@@ -3,9 +3,9 @@
 
 #include "common.hpp"
 
-std::vector<ull> get_invalids(ull left, ull right) noexcept
+std::vector<i64> get_invalids(i64 left, i64 right) noexcept
 {
-	std::vector<ull> inv;
+	std::vector<i64> inv;
 
 	for (auto i = left; i <= right; i++) {
 		auto s = std::to_string(i);
@@ -25,7 +25,7 @@ std::vector<ull> get_invalids(ull left, ull right) noexcept
 }
 
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
 	std::ifstream file = aoc::open_data(argc, argv);
 	std::string record;
@@ -34,15 +34,14 @@ int main(int argc, char *argv[])
 	std::stringstream ss(record);
 	std::string token;
 
-	auto result = 0ULL;
+	auto result = i64{0};
 	while (std::getline(ss, token, ',')) {
-		auto [left, right] = aoc::parse_pair<ull>(token);
+		auto [left, right] = aoc::parse_pair<i64>(token);
 		auto inv = get_invalids(left, right);
-		//std::cout << inv << std::endl;
-		result += std::accumulate(inv.begin(), inv.end(), 0ULL);
+		result += std::accumulate(inv.begin(), inv.end(), i64{0});
 	}
 
-	std::cout << "Result: " << result << std::endl;
+	std::cout << "Result: " << result << '\n';
 
 	return 0;
 }

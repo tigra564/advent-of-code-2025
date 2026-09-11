@@ -2,7 +2,7 @@
 
 #include "common.hpp"
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
 	std::ifstream file = aoc::open_data(argc, argv);
 	std::string record;
@@ -23,8 +23,8 @@ int main(int argc, char *argv[])
 	};
 
 	auto result = 0ULL;
-	for (size_t i = 1; i < grid.size() - 1; i++) {
-		for (size_t j = 1; j < grid[i].size() - 1; j++) {
+	for (std::size_t i = 1; i < grid.size() - 1; i++) {
+		for (std::size_t j = 1; j < grid[i].size() - 1; j++) {
 			if (grid[i][j] != '@') {
 				//std::cout << '.';
 				continue;
@@ -40,10 +40,10 @@ int main(int argc, char *argv[])
 				result++;
 			//std::cout << num;
 		}
-		//std::cout << std::endl;
+		//std::cout << '\n';
 	}
 
-	std::cout << "Result: " << result << std::endl;
+	std::cout << "Result: " << result << '\n';
 
 	return 0;
 }

@@ -119,7 +119,7 @@ Blocks form_blocks(const HSegments& segs)
 	};
 	Blocks blocks_fixed;
 	for (const auto& s : segs) {
-		std::cout << s << std::endl;
+		std::cout << s << '\n';
 
 		Blocks blocks_cont;
 		// We''ll fix left and right boundaries in the end of the loop below
@@ -132,10 +132,10 @@ Blocks form_blocks(const HSegments& segs)
 		};
 
 		for (auto b = blocks.begin(); b != blocks.end();) {
-			//std::cout << *b << std::endl;
+			//std::cout << *b << '\n';
 
 			auto sections = b->get_sections(s);
-			//std::cout << "<" << sections.first << "," << sections.second << ">" << std::endl;
+			//std::cout << "<" << sections.first << "," << sections.second << ">" << '\n';
 
 			if (sections.first == -1) {
 				++b;
@@ -182,7 +182,7 @@ Blocks form_blocks(const HSegments& segs)
 			std::cout << ", ";
 			if (added_right)
 				std::cout << block_right;
-			std::cout << ">" << std::endl;
+			std::cout << ">" << '\n';
 
 			block_new.left = std::min(block_new.left, block_fixed.left);
 			block_new.right = std::max(block_new.right, block_fixed.right);
@@ -196,9 +196,9 @@ Blocks form_blocks(const HSegments& segs)
 
 		bool added_new = add_block(blocks, block_new);
 		if (added_new)
-			std::cout << "  <= " << block_new << std::endl;
+			std::cout << "  <= " << block_new << '\n';
 	
-		std::cout << std::endl;
+		std::cout << '\n';
 	}
 
 	// Add few remaining blocks left in "blocks" container
@@ -208,7 +208,7 @@ Blocks form_blocks(const HSegments& segs)
 }
 
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
 	std::ifstream file = aoc::open_data(argc, argv);
 	std::string record;
@@ -224,7 +224,7 @@ int main(int argc, char *argv[])
 
 	HSegments segs;
 	auto tprev = ntiles - 1;
-	for (size_t t = 0; t < ntiles; t++) {
+	for (std::size_t t = 0; t < ntiles; t++) {
 		if (tiles[tprev][1] == tiles[t][1]) {
 			auto left_right = std::minmax(tiles[tprev][0], tiles[t][0]);
 			segs.emplace(HSegment{left_right.first, left_right.second, tiles[t][1]});
@@ -235,8 +235,8 @@ int main(int argc, char *argv[])
 	Blocks blocks = form_blocks(segs);
 
 	for (const auto& b : blocks)
-		std::cout << b << std::endl;
-	std::cout << std::endl;
+		std::cout << b << '\n';
+	std::cout << '\n';
 
 	Blocks blocks_out;
 	std::copy_if(blocks.begin(), blocks.end(),
@@ -244,10 +244,10 @@ int main(int argc, char *argv[])
 		[](const auto& b) { return !b.is_inside; }
 	);
 
-	std::vector<std::pair<Block, ll>> areas;
+	std::vector<std::pair<Block, i64>> areas;
 	areas.reserve(ntiles * (ntiles-1) / 2);
-	for (size_t i = 0; i < ntiles; i++) {
-		for (size_t j = i+1; j < ntiles; j++) {
+	for (std::size_t i = 0; i < ntiles; i++) {
+		for (std::size_t j = i+1; j < ntiles; j++) {
 			// We are lazy and just reuse Block struct
 			std::pair<int, int> lr = std::minmax(tiles[i][0], tiles[j][0]);
 			std::pair<int, int> bt = std::minmax(tiles[i][1], tiles[j][1]);
@@ -256,28 +256,28 @@ int main(int argc, char *argv[])
 			bool fits = !intersects_blocks(blocks_out, b);
 
 			auto area =
-				static_cast<ll>(b.right - b.left + 1) *
-				static_cast<ll>(b.top - b.bottom + 1);
+				static_cast<i64>(b.right - b.left + 1) *
+				static_cast<i64>(b.top - b.bottom + 1);
 
-			std::cout << (fits ? "* " : "  ") << b << " " << area << std::endl;
+			std::cout << (fits ? "* " : "  ") << b << " " << area << '\n';
 
 			if (!fits)
 				continue;
-			areas.emplace_back(std::pair<Block, ll>{b, area});
+			areas.emplace_back(std::pair<Block, i64>{b, area});
 		}
 	}
 
 	std::nth_element(areas.begin(), areas.begin(), areas.end(),
-		[](const auto&  a, const auto& b) {return a.second > b.second;}
+		[](const auto& a, const auto& b) {return a.second > b.second;}
 	);
 
 	const Block& win = areas[0].first;
-	std::cout << "Winner: " << win << std::endl;
+	std::cout << "Winner: " << win << '\n';
 	// This is suitable format for visualizer
-	std::cout << win.left << " " << win.bottom << " " << win.right << " " << win.top << std::endl;
+	std::cout << win.left << " " << win.bottom << " " << win.right << " " << win.top << '\n';
 
 	auto result = areas[0].second;
-	std::cout << "Result: " << result << std::endl;
+	std::cout << "Result: " << result << '\n';
 
 	return 0;
 }

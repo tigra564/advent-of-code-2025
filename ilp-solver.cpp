@@ -16,7 +16,7 @@ std::ostream& operator<<(std::ostream& os, const Matrix& matrix)
 		for (const auto& cell : row) {
 			std::cout << std::setw(width + 1) << cell; 
 		}
-		std::cout << std::endl;
+		std::cout << '\n';
 	}
 
 	return os;
@@ -29,7 +29,7 @@ static void scale_down(std::vector<int>& line)
 
 	// Scale row so that basis variable coefficient is 1.  If possible.
 	// In any case its sign must be positive.
-	size_t col = 0;
+	std::size_t col = 0;
 	for (; col < ncols; col++) {
 		if (line[col])
 			break;
@@ -43,9 +43,9 @@ static void scale_down(std::vector<int>& line)
 	if (-1 == coeff)
 		mingcd = 1;
 	else
-		for (size_t c = col + 1; c < ncols; c++)
+		for (std::size_t c = col + 1; c < ncols; c++)
 			mingcd = std::min(mingcd, std::gcd(coeff, line[c]));
-	for (size_t c = col; c < ncols; c++)
+	for (std::size_t c = col; c < ncols; c++)
 		line[c] /= sign * mingcd;
 }
 
@@ -67,7 +67,7 @@ static int gauss_forward_step(Matrix& matrix, int row, int col)
 		else if (0 == min_abs_coeff)
 			min_abs_coeff = std::numeric_limits<int>::max();
 
-		for (size_t swap_row = row + 1; swap_row < matrix.size(); swap_row++) {
+		for (std::size_t swap_row = row + 1; swap_row < matrix.size(); swap_row++) {
 			if (min_abs_coeff == 1)
 				break;
 
@@ -139,7 +139,7 @@ static int equalize_basis(Matrix& problem)
 	auto all = std::accumulate(factors.begin(), factors.end(),
 			1, std::multiplies<int>());
 
-	for (size_t row = 0; row < problem.size(); row++) {
+	for (std::size_t row = 0; row < problem.size(); row++) {
 		auto f = factors_initial[row];
 		for (auto& cell : problem[row])
 			cell *= all / f;
@@ -158,7 +158,7 @@ static std::vector<int> find_bounds(const Matrix& free_vars)
 
 	for (const auto& line : free_vars) {
 		int rhs = line.back();
-		for (size_t v = 0; v < num_vars; v++) {
+		for (std::size_t v = 0; v < num_vars; v++) {
 			auto coeff = line[v];
 			// We process only vars with strictly positive coefficients
 			if (coeff <= 0)
@@ -177,9 +177,9 @@ static std::vector<int> find_bounds(const Matrix& free_vars)
 		}
 	}
 
-	std::cout << "Bounds: " << bounds << std::endl;
+	std::cout << "Bounds: " << bounds << '\n';
 
-	size_t unbounded;
+	std::size_t unbounded;
 	for (unbounded = 0; unbounded < num_vars; unbounded++) {
 		if (MAXINT == bounds[unbounded])
 			break;
@@ -197,7 +197,7 @@ static std::vector<int> find_bounds(const Matrix& free_vars)
 		if (0 == line[unbounded])
 			continue;
 
-		for (size_t b = 0; b < num_vars; b++) {
+		for (std::size_t b = 0; b < num_vars; b++) {
 			// Skip unbounded variables
 			if (bounds[b] == MAXINT)
 				continue;
@@ -213,7 +213,7 @@ static std::vector<int> find_bounds(const Matrix& free_vars)
 			line[b] = 0;
 		}
 	}
-	std::cout << "New free variables\n" << new_free_vars << std::endl;
+	std::cout << "New free variables\n" << new_free_vars << '\n';
 
 	return find_bounds(new_free_vars);
 }
@@ -231,11 +231,11 @@ static std::vector<int> fix_free_vars(Matrix& free_vars, int basis_factor)
 	std::vector<int> objective_coeffs(num_vars, basis_factor);
 
 	for (const auto& line : free_vars) {
-		for (size_t c = 0; c < num_vars; c++) {
+		for (std::size_t c = 0; c < num_vars; c++) {
 			objective_coeffs[c] -= line[c];
 		}
 	}
-	std::cout << "Objective coeffs: " << objective_coeffs << std::endl;
+	std::cout << "Objective coeffs: " << objective_coeffs << '\n';
 
 	auto bounds = find_bounds(free_vars);
 
@@ -249,13 +249,13 @@ static std::vector<int> fix_free_vars(Matrix& free_vars, int basis_factor)
 		&try_free_vars_combo
 	](const std::vector<int>& values)
 	{
-		//std::cout << "Values: " << values << std::endl;
+		//std::cout << "Values: " << values << '\n';
 		
 		if (values.size() < num_vars) {
 			std::vector<int> new_values = values;
 			new_values.emplace_back(0);
 			auto var_pos = values.size();
-			//std::cout << "New values: " << new_values << std::endl;
+			//std::cout << "New values: " << new_values << '\n';
 			for (auto val = 0; val <= bounds[var_pos]; val++) {
 				new_values.back() = val;
 				try_free_vars_combo(new_values);
@@ -266,7 +266,7 @@ static std::vector<int> fix_free_vars(Matrix& free_vars, int basis_factor)
 
 		for (const auto& line : free_vars) {
 			int lhs = 0;
-			for (size_t v = 0; v < num_vars; v++) {
+			for (std::size_t v = 0; v < num_vars; v++) {
 				lhs += line[v] * values[v];
 			}
 			auto diff = line.back() - lhs;
@@ -277,11 +277,11 @@ static std::vector<int> fix_free_vars(Matrix& free_vars, int basis_factor)
 		}
 
 		int objective = 0;
-		for (size_t v = 0; v < num_vars; v++) {
+		for (std::size_t v = 0; v < num_vars; v++) {
 			objective += objective_coeffs[v] * values[v];
 		}
 
-		//std::cout << "F = " << objective << std::endl;
+		//std::cout << "F = " << objective << '\n';
 		if (objective < best_objective) {
 			best_objective = objective;
 			best_solution = values;
@@ -289,7 +289,7 @@ static std::vector<int> fix_free_vars(Matrix& free_vars, int basis_factor)
 	};
 
 	try_free_vars_combo({});
-	std::cout << best_objective << ": " << best_solution << std::endl;
+	std::cout << best_objective << ": " << best_solution << '\n';
 
 	return best_solution;
 }
@@ -299,25 +299,25 @@ std::vector<int> solve(Matrix problem)
 {
 	std::set<int> basis_var_poses, free_var_poses;
 
-	std::cout << problem << std::endl;
+	std::cout << problem << '\n';
 
 	int col = 0;
-	for (size_t row = 0; row < problem.size(); row++) {
+	for (std::size_t row = 0; row < problem.size(); row++) {
 		col = gauss_forward_step(problem, row, col);
 		basis_var_poses.emplace(col);
 		col++;
-		std::cout << problem << std::endl;
+		std::cout << problem << '\n';
 	}
 
 	auto bfactor = equalize_basis(problem);
-	std::cout << "Equalized:\n" << problem << std::endl;
+	std::cout << "Equalized:\n" << problem << '\n';
 
-	for (size_t c = 0; c < problem[0].size() - 1; c++)
+	for (std::size_t c = 0; c < problem[0].size() - 1; c++)
 		if (basis_var_poses.find(c) == basis_var_poses.end())
 			free_var_poses.emplace(c);
 
-	std::cout << "Basis variable positions: " << basis_var_poses << std::endl;
-	std::cout << "Free  variable positions: " << free_var_poses << std::endl;
+	std::cout << "Basis variable positions: " << basis_var_poses << '\n';
+	std::cout << "Free  variable positions: " << free_var_poses << '\n';
 
 	Matrix free_vars;
 	for (const auto& line : problem) {
@@ -330,7 +330,7 @@ std::vector<int> solve(Matrix problem)
 		free_line.emplace_back(line.back());
 		free_vars.emplace_back(free_line);
 	}
-	std::cout << free_vars << std::endl;
+	std::cout << free_vars << '\n';
 
 	std::vector<int> fv_solution = fix_free_vars(free_vars, bfactor);
 	std::vector<int> solution(problem[0].size() - 1, 0);

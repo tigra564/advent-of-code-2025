@@ -1,6 +1,6 @@
 #include "08-common.hpp"
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
 	std::ifstream file = aoc::open_data(argc, argv);
 
@@ -25,10 +25,10 @@ int main(int argc, char *argv[])
 	std::partial_sort(sizes.begin(), sizes.begin() + 3, sizes.end(),
 		[](auto a, auto b) { return a > b; }
 	);
-	//std::cout << sizes << std::endl;
+	//std::cout << sizes << '\n';
 
 	auto result = sizes[0] * sizes[1] * sizes[2];
-	std::cout << "Result: " << result << std::endl;
+	std::cout << "Result: " << result << '\n';
 
 	return 0;
 }

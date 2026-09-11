@@ -18,7 +18,7 @@ Connections parse_connections(std::ifstream& file)
 		connections.emplace(from, to);
 	}
 
-	//std::cout << connections << std::endl;
+	//std::cout << connections << '\n';
 
 	return connections;
 }

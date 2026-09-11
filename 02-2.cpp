@@ -3,27 +3,29 @@
 
 #include "common.hpp"
 
-std::set<ull> get_invalids(ull left, ull right) noexcept
+std::vector<i64> get_invalids(i64 left, i64 right) noexcept
 {
-	std::set<ull> inv;
+	std::vector<i64> inv;
 
 	for (auto i = left; i <= right; i++) {
 		auto s = std::to_string(i);
 		auto sz = s.size();
 
-		for (auto k = 1ULL; k < sz; k++) {
+		for (std::size_t k = 1; k < sz; k++) {
 			if (sz % k)
 				continue;
 
 			auto patt = s.substr(0, k);
-			std::string result;
-			result.reserve(sz);
-			for (auto p = 0ULL; p < sz / k; p++) {
-				result += patt;
+			std::string candidate;
+			candidate.reserve(sz);
+			for (std::size_t p = 0; p < sz / k; p++) {
+				candidate += patt;
 			}
 
-			if (result == s)
-				inv.emplace(i);
+			if (candidate == s) {
+				inv.emplace_back(i);
+				break;
+			}
 		}
 	}
 
@@ -31,7 +33,7 @@ std::set<ull> get_invalids(ull left, ull right) noexcept
 }
 
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
 	std::ifstream file = aoc::open_data(argc, argv);
 	std::string record;
@@ -40,15 +42,14 @@ int main(int argc, char *argv[])
 	std::stringstream ss(record);
 	std::string token;
 
-	auto result = 0ULL;
+	auto result = i64{0};
 	while (std::getline(ss, token, ',')) {
-		auto [left, right] = aoc::parse_pair<ull>(token);
+		auto [left, right] = aoc::parse_pair<i64>(token);
 		auto inv = get_invalids(left, right);
-		//std::cout << inv << std::endl;
-		result += std::accumulate(inv.begin(), inv.end(), 0ULL);
+		result += std::accumulate(inv.begin(), inv.end(), i64{0});
 	}
 
-	std::cout << "Result: " << result << std::endl;
+	std::cout << "Result: " << result << '\n';
 
 	return 0;
 }

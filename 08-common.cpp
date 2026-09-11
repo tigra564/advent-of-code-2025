@@ -7,7 +7,7 @@ std::ostream& operator<<(std::ostream& os, const Clusters& clusters)
 		for (const auto& v : p.second.points) {
 			os << " " << v;
 		}
-		os << std::endl;
+		os << '\n';
 	}
 
 	return os;
@@ -19,10 +19,10 @@ Jboxes parse_jboxes(std::ifstream& file)
 	std::string record;
 
 	while (file >> record) {
-		//std::cout << record << std::endl;
+		//std::cout << record << '\n';
 
 		std::stringstream ss(record);
-		std::array<ull, 3> jbox;
+		std::array<i64, 3> jbox;
 		for (auto i = 0; i < 3; i++) {
 			std::string token;
 			std::getline(ss, token, ',');
@@ -31,7 +31,7 @@ Jboxes parse_jboxes(std::ifstream& file)
 
 		jboxes.emplace_back(jbox);
 	}
-	//std::cout << std::endl;
+	//std::cout << '\n';
 
 	return jboxes;
 }
@@ -42,9 +42,9 @@ std::vector<jb_dist> get_distances(const Jboxes& jboxes)
 	auto jbsz = jboxes.size();
 	distances.reserve(jbsz * (jbsz-1) / 2);
 
-	for (size_t i = 0; i < jbsz; i++) {
-		for (size_t j = i+1; j < jbsz; j++) {
-			auto dist = 0ULL;
+	for (std::size_t i = 0; i < jbsz; i++) {
+		for (std::size_t j = i+1; j < jbsz; j++) {
+			i64 dist = 0;
 			for (auto k = 0; k < 3; k++) {
 				auto diff = jboxes[i][k] - jboxes[j][k];
 				dist += diff * diff;
@@ -54,18 +54,18 @@ std::vector<jb_dist> get_distances(const Jboxes& jboxes)
 	}
 	/*
 	for (const auto& d : distances)
-		std::cout << d.first << " " << d.second << std::endl;
-	std::cout << std::endl;
+		std::cout << d.first << " " << d.second << '\n';
+	std::cout << '\n';
 	*/
 	
 	return distances;
 }
 
-std::pair<Clusters, jb_dist> form_clusters(const std::vector<jb_dist>& distances, size_t max_jboxes)
+std::pair<Clusters, jb_dist> form_clusters(const std::vector<jb_dist>& distances, std::size_t max_jboxes)
 {
 	Clusters clusters;
 
-	for (size_t i = 0; i < max_jboxes; i++) {
+	for (std::size_t i = 0; i < max_jboxes; i++) {
 		clusters[i] = Cluster();
 		clusters[i].points.emplace_back(i);
 	}
@@ -75,7 +75,7 @@ std::pair<Clusters, jb_dist> form_clusters(const std::vector<jb_dist>& distances
 		const auto& d = *it;
 		int lo = d.first, hi = d.second;
 
-		//std::cout << lo << "<->" << hi << std::endl;
+		//std::cout << lo << "<->" << hi << '\n';
 
 		while (-1 != clusters[lo].moved_to)
 			lo = clusters[lo].moved_to;
@@ -102,7 +102,7 @@ std::pair<Clusters, jb_dist> form_clusters(const std::vector<jb_dist>& distances
 		if (d.second != lo)
 			clusters[d.second].moved_to = lo;
 
-		//std::cout << clusters << std::endl;
+		//std::cout << clusters << '\n';
 
 		if (max_jboxes == clusters[lo].points.size())
 			break;

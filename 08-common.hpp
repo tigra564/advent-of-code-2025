@@ -17,11 +17,11 @@ using Clusters = std::unordered_map<int, Cluster>;
 
 std::ostream& operator<<(std::ostream& os, const Clusters& clusters);
 	
-using Jboxes = std::vector<std::array<ull, 3>>;
+using Jboxes = std::vector<std::array<i64, 3>>;
 Jboxes parse_jboxes(std::ifstream& file);
 
 struct jb_dist {
-	ull distance;
+	i64 distance;
 	int first;
 	int second;
 
@@ -35,6 +35,6 @@ struct jb_dist {
 };
 
 std::vector<jb_dist> get_distances(const Jboxes& jboxes);
-std::pair<Clusters, jb_dist> form_clusters(const std::vector<jb_dist>& distances, size_t max_jboxes);
+std::pair<Clusters, jb_dist> form_clusters(const std::vector<jb_dist>& distances, std::size_t max_jboxes);
 
 #endif //_08_COMMON_HPP

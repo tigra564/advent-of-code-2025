@@ -3,19 +3,19 @@
 
 #include "common.hpp"
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
 	std::ifstream file = aoc::open_data(argc, argv);
 	std::string record;
 	std::vector<std::string> syms;
 
 	while (std::getline(file, record)) {
-		//std::cout << "[" << record << "]" << std::endl;
+		//std::cout << "[" << record << "]" << '\n';
 		syms.emplace_back(record);
 	}
 
 	auto result = 0ULL;
-	std::vector<ull> numbers;
+	std::vector<i64> numbers;
 	for (int i = syms[0].size() - 1; i >= 0; i--) {
 		bool is_empty = true;
 		auto number = 0ULL;
@@ -35,26 +35,26 @@ int main(int argc, char *argv[])
 		if (' ' == op)
 			continue;
 
-		//std::cout << op << std::endl;
-		ull partial;
+		//std::cout << op << '\n';
+		i64 partial;
 		switch (op) {
 		default: continue;
 		case '*':
 			partial = std::accumulate(numbers.begin(), numbers.end(),
-				1ULL, std::multiplies<ull>());
+				1ULL, std::multiplies<i64>());
 			break;
 		case '+':
 			partial = std::accumulate(numbers.begin(), numbers.end(),
-				0ULL, std::plus<ull>());
+				0ULL, std::plus<i64>());
 			break;
 		}
-		//std::cout << partial << std::endl;
+		//std::cout << partial << '\n';
 		numbers.resize(0);
 
 		result += partial;
 	}
 
-	std::cout << "Result: " << result << std::endl;
+	std::cout << "Result: " << result << '\n';
 
 	return 0;
 }

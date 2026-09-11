@@ -2,7 +2,7 @@
 
 #include "common.hpp"
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
 	std::ifstream file = aoc::open_data(argc, argv);
 	std::string record;
@@ -14,10 +14,10 @@ int main(int argc, char *argv[])
 
 		result += (*first - '0') * 10 + (*second - '0');
 
-		//std::cout << record << " " << *first << " " << *second << std::endl;
+		//std::cout << record << " " << *first << " " << *second << '\n';
 	}
 
-	std::cout << "Result: " << result << std::endl;
+	std::cout << "Result: " << result << '\n';
 
 	return 0;
 }

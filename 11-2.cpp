@@ -3,10 +3,10 @@
 #include "11-common.hpp"
 
 struct PathInfo {
-	ll count_empty;
-	ll count_dac;
-	ll count_fft;
-	ll count_both;
+	i64 count_empty;
+	i64 count_dac;
+	i64 count_fft;
+	i64 count_both;
 };
 
 std::ostream& operator<<(std::ostream& os, const PathInfo& info)
@@ -19,7 +19,7 @@ std::ostream& operator<<(std::ostream& os, const PathInfo& info)
 	return os;
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
 	std::ifstream file = aoc::open_data(argc, argv);
 
@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
 	std::function< PathInfo(std::set<std::string>, const std::string&) > count_paths;
 	count_paths = [
 		&connections, &node_paths, &count_paths
-	](std::set<std::string> nodes_visited,  const std::string from)
+	](std::set<std::string> nodes_visited, const std::string from)
 	{
 		if (from == "out")
 			return PathInfo{1, 0, 0, 0};
@@ -45,15 +45,15 @@ int main(int argc, char *argv[])
 		// calculated at the point.
 
 		auto [node_paths_it, node_paths_inserted] = node_paths.insert({from, {0, 0, 0, 0}});
-		if(!node_paths_inserted)
+		if (!node_paths_inserted)
 			// Return cached result
 			return node_paths_it->second;
 
 		PathInfo new_info = {0, 0, 0, 0};
-		//std::cout << "FROM: " << from << std::endl;
+		//std::cout << "FROM: " << from << '\n';
 		for (const auto& to : connections[from]) {
 			auto info = count_paths(nodes_visited, to);
-			//std::cout << "<- " << info << std::endl;
+			//std::cout << "<- " << info << '\n';
 
 			if (from == "dac") {
 				new_info.count_dac	+= info.count_dac + info.count_empty;
@@ -70,13 +70,13 @@ int main(int argc, char *argv[])
 		}
 
 		node_paths_it->second = new_info;
-		//std::cout << new_info << std::endl;
+		//std::cout << new_info << '\n';
 		return new_info;
 	};
 
 	auto info = count_paths({}, "svr");
 	auto result = info.count_both;
-	std::cout << "Result: " << result << std::endl;
+	std::cout << "Result: " << result << '\n';
 
 	return 0;
 }

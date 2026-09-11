@@ -1,6 +1,6 @@
 #include "08-common.hpp"
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
 	std::ifstream file = aoc::open_data(argc, argv);
 
@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
 	auto [clusters, last_distance] = form_clusters(distances, jbsz);
 
 	auto result = jboxes[last_distance.first][0] * jboxes[last_distance.second][0];
-	std::cout << "Result: " << result << std::endl;
+	std::cout << "Result: " << result << '\n';
 
 	return 0;
 }

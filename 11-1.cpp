@@ -2,7 +2,7 @@
 
 #include "11-common.hpp"
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
 	std::ifstream file = aoc::open_data(argc, argv);
 
@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 	std::function<int(std::set<std::string>, const std::string&)> count_paths;
 	count_paths = [
 		&connections, &node_paths, &count_paths
-	](std::set<std::string> nodes_visited,  const std::string from)
+	](std::set<std::string> nodes_visited, const std::string from)
 	{
 		if (from == "out")
 			return 1;
@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
 	};
 
 	auto result = count_paths({}, "you");
-	std::cout << "Result: " << result << std::endl;
+	std::cout << "Result: " << result << '\n';
 
 	return 0;
 }

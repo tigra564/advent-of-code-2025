@@ -2,7 +2,7 @@
 
 #include "common.hpp"
 
-ull remove(std::vector<std::string>& grid) noexcept
+int remove(std::vector<std::string>& grid) noexcept
 {
 	const std::vector<std::pair<int, int>> directions = {
 		{-1, -1}, {-1, 0}, {-1, 1},
@@ -11,8 +11,8 @@ ull remove(std::vector<std::string>& grid) noexcept
 	};
 
 	auto count = 0UL;
-	for (size_t i = 1; i < grid.size() - 1; i++) {
-		for (size_t j = 1; j < grid[i].size() - 1; j++) {
+	for (std::size_t i = 1; i < grid.size() - 1; i++) {
+		for (std::size_t j = 1; j < grid[i].size() - 1; j++) {
 			if (grid[i][j] != '@') {
 				//std::cout << '.';
 				continue;
@@ -31,11 +31,11 @@ ull remove(std::vector<std::string>& grid) noexcept
 			}
 			//std::cout << (num < 4 ? 'X' : '@');
 		}
-		//std::cout << std::endl;
+		//std::cout << '\n';
 	}
 
-	for (size_t i = 1; i < grid.size() - 1; i++) {
-		for (size_t j = 1; j < grid[i].size() - 1; j++) {
+	for (std::size_t i = 1; i < grid.size() - 1; i++) {
+		for (std::size_t j = 1; j < grid[i].size() - 1; j++) {
 			if (grid[i][j] == 'X')
 				grid[i][j] = '.';
 		}
@@ -45,7 +45,7 @@ ull remove(std::vector<std::string>& grid) noexcept
 }
 
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
 	std::ifstream file = aoc::open_data(argc, argv);
 	std::string record;
@@ -59,13 +59,13 @@ int main(int argc, char *argv[])
 	} while (file >> record);
 	grid.push_back(grid[0]);
 
-	auto result = 0UL;
+	auto result = 0;
 	while (auto num = remove(grid)) {
 		result += num;
-		//std::cout << std::endl;
+		//std::cout << '\n';
 	}
 
-	std::cout << "Result: " << result << std::endl;
+	std::cout << "Result: " << result << '\n';
 
 	return 0;
 }

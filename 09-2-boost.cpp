@@ -33,7 +33,7 @@ std::vector<Point> readPoints(const std::string& filename) {
     std::string line;
 
     if (!file.is_open()) {
-        std::cerr << "Error: Could not open file: " << filename << std::endl;
+        std::cerr << "Error: Could not open file: " << filename << '\n';
         return points;
     }
 
@@ -48,13 +48,13 @@ std::vector<Point> readPoints(const std::string& filename) {
             
             // Overflow check
             if (x < LLONG_MIN/2 || x > LLONG_MAX/2 || y < LLONG_MIN/2 || y > LLONG_MAX/2) {
-                std::cerr << "Warning: Skipping out-of-range coordinates: " << x << "," << y << std::endl;
+                std::cerr << "Warning: Skipping out-of-range coordinates: " << x << "," << y << '\n';
                 continue;
             }
             
             points.emplace_back(x, y);
         } catch (const std::exception& e) {
-            std::cerr << "Warning: Failed to parse line: " << line << " - " << e.what() << std::endl;
+            std::cerr << "Warning: Failed to parse line: " << line << " - " << e.what() << '\n';
         }
     }
     return points;
@@ -131,7 +131,7 @@ Result solveDay9Part2(const std::vector<Point>& points) {
                     }
                 }
             } catch (const std::exception& e) {
-                std::cerr << "Warning: Geometry operation failed: " << e.what() << std::endl;
+                std::cerr << "Warning: Geometry operation failed: " << e.what() << '\n';
             }
         }
     }
@@ -140,8 +140,8 @@ Result solveDay9Part2(const std::vector<Point>& points) {
 }
 
 void printUsage(const char* programName) {
-    std::cerr << "Usage: " << programName << " <filename>" << std::endl;
-    std::cerr << "Example: " << programName << " input.txt" << std::endl;
+    std::cerr << "Usage: " << programName << " <filename>" << '\n';
+    std::cerr << "Example: " << programName << " input.txt" << '\n';
 }
 
 int main(int argc, char* argv[]) {
@@ -155,25 +155,25 @@ int main(int argc, char* argv[]) {
     try {
         auto points = readPoints(filename);
         if (points.empty()) {
-            std::cerr << "Error: No points loaded or file is empty." << std::endl;
+            std::cerr << "Error: No points loaded or file is empty." << '\n';
             return 1;
         }
 
         Result result = solveDay9Part2(points);
         
-        std::cout << "=== Day 9 Part 2 Solution ===" << std::endl;
-        std::cout << "Maximum area: " << result.area << std::endl;
+        std::cout << "=== Day 9 Part 2 Solution ===" << '\n';
+        std::cout << "Maximum area: " << result.area << '\n';
         if (result.area > 0) {
-            std::cout << "Rectangle coordinates:" << std::endl;
-            std::cout << "  Bottom-left:  (" << result.p1.x() << ", " << result.p1.y() << ")" << std::endl;
-            std::cout << "  Top-right:    (" << result.p2.x() << ", " << result.p2.y() << ")" << std::endl;
-            std::cout << "  Width:  " << (result.p2.x() - result.p1.x() + 1) << std::endl;
-            std::cout << "  Height: " << (result.p2.y() - result.p1.y() + 1) << std::endl;
+            std::cout << "Rectangle coordinates:" << '\n';
+            std::cout << "  Bottom-left:  (" << result.p1.x() << ", " << result.p1.y() << ")" << '\n';
+            std::cout << "  Top-right:    (" << result.p2.x() << ", " << result.p2.y() << ")" << '\n';
+            std::cout << "  Width:  " << (result.p2.x() - result.p1.x() + 1) << '\n';
+            std::cout << "  Height: " << (result.p2.y() - result.p1.y() + 1) << '\n';
         } else {
-            std::cout << "No valid rectangle found." << std::endl;
+            std::cout << "No valid rectangle found." << '\n';
         }
     } catch (const std::exception& e) {
-        std::cerr << "Fatal error: " << e.what() << std::endl;
+        std::cerr << "Fatal error: " << e.what() << '\n';
         return 1;
     }
 

@@ -2,7 +2,7 @@
 
 #include "common.hpp"
 
-bool intervals_overlap(const std::pair<ull, ull>& one, const std::pair<ull, ull>& two) noexcept
+bool intervals_overlap(const std::pair<i64, i64>& one, const std::pair<i64, i64>& two) noexcept
 {
 	// Either left of pair one is inside pair two or adjacent to pair two from right or...
 	// the same for left of pair two wrt pair one
@@ -22,26 +22,26 @@ bool intervals_overlap(const std::pair<ull, ull>& one, const std::pair<ull, ull>
 }
 
 
-std::pair<ull, ull> merge_intervals(const std::pair<ull, ull>& one, const std::pair<ull, ull>& two) noexcept
+std::pair<i64, i64> merge_intervals(const std::pair<i64, i64>& one, const std::pair<i64, i64>& two) noexcept
 {
-	std::pair<ull, ull> merged = { std::min(one.first, two.first), std::max(one.second, two.second) };
-	//std::cout << one << " U " << two << std::endl;
+	std::pair<i64, i64> merged = { std::min(one.first, two.first), std::max(one.second, two.second) };
+	//std::cout << one << " U " << two << '\n';
 	return merged;
 }
 
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
 	std::ifstream file = aoc::open_data(argc, argv);
 	std::string record;
 
-	std::set<std::pair<ull, ull>> fresh_ranges;
+	std::set<std::pair<i64, i64>> fresh_ranges;
 
 	while (std::getline(file, record)) {
 		if (0 == record.size())
 			break;
 
-		auto [left, right] = aoc::parse_pair<ull>(record);
+		auto [left, right] = aoc::parse_pair<i64>(record);
 		fresh_ranges.emplace(left, right);
 	}
 
@@ -49,9 +49,9 @@ int main(int argc, char *argv[])
 	do {
 		merged = false;
 		for (auto it = fresh_ranges.begin(); it != fresh_ranges.end() && !merged; ++it) {
-			//std::cout << *it << std::endl;
+			//std::cout << *it << '\n';
 			for (auto jt = std::next(it); jt != fresh_ranges.end() && !merged; ++jt) {
-				//std::cout << "   " << *jt << std::endl;
+				//std::cout << "   " << *jt << '\n';
 				if (intervals_overlap(*it, *jt)) {
 					auto new_interval = merge_intervals(*it, *jt);
 					// jt > it always
@@ -66,20 +66,20 @@ int main(int argc, char *argv[])
 	} while (merged);
 
 	/*
-	std::cout << "Finally:" << std::endl;
+	std::cout << "Finally:" << '\n';
 	for (const auto& range : fresh_ranges) {
-		std::cout << range <<std::endl;
+		std::cout << range <<'\n';
 	}
 	*/
 
 	auto result = std::accumulate(
 		fresh_ranges.begin(), fresh_ranges.end(), 0ULL,
-		[](ull sum, const auto& range) {
+		[](i64 sum, const auto& range) {
 			return sum + range.second - range.first + 1;
 		}
 	);
 
-	std::cout << "Result: " << result << std::endl;
+	std::cout << "Result: " << result << '\n';
 
 	return 0;
 }

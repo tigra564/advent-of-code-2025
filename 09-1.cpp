@@ -6,7 +6,7 @@ using Tile = std::array<int, 2>;
 using Tiles = std::vector<Tile>;
 
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
 	std::ifstream file = aoc::open_data(argc, argv);
 	std::string record;
@@ -14,26 +14,26 @@ int main(int argc, char *argv[])
 	Tiles tiles;
 
 	while (file >> record) {
-		//std::cout << record << std::endl;
+		//std::cout << record << '\n';
 
 		auto [t0, t1] = aoc::parse_pair<int>(record, ",");
 		tiles.emplace_back(Tile{t0, t1});
 	}
-	//std::cout << std::endl;
+	//std::cout << '\n';
 
 	auto ntiles = tiles.size();
 
-	auto result = 0LL;
-	for (size_t i = 0; i < ntiles; i++) {
-		for (size_t j = i+1; j < ntiles; j++) {
+	i64 result = 0;
+	for (std::size_t i = 0; i < ntiles; i++) {
+		for (std::size_t j = i+1; j < ntiles; j++) {
 			auto area =
-				static_cast<ll>(std::abs(tiles[i][0] - tiles[j][0]) + 1) *
-				static_cast<ll>(std::abs(tiles[i][1] - tiles[j][1]) + 1);
+				static_cast<i64>(std::abs(tiles[i][0] - tiles[j][0]) + 1) *
+				static_cast<i64>(std::abs(tiles[i][1] - tiles[j][1]) + 1);
 			result = std::max(result, area);
 		}
 	}
 
-	std::cout << "Result: " << result << std::endl;
+	std::cout << "Result: " << result << '\n';
 
 	return 0;
 }

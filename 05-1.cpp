@@ -17,12 +17,10 @@ int main(int argc, char* argv[])
 
 	auto result = 0;
 	while (std::getline(file, record)) {
-		//std::cout << record << '\n';
 		i64 id = std::stoll(record);
 
 		for (const auto& range : fresh_ranges) {
 			if (range.first <= id && id <= range.second) {
-				//std::cout << "fresh\n";
 				result++;
 				break;
 			}

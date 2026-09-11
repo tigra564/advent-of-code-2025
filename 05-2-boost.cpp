@@ -19,8 +19,8 @@ int main(int argc, char* argv[])
 	}
 
 	auto result = std::accumulate(
-		fresh_ranges.begin(), fresh_ranges.end(), 0ULL,
-		[](std::size_t sum, const auto& interval) {
+		fresh_ranges.begin(), fresh_ranges.end(), i64{0},
+		[](i64 sum, const auto& interval) {
 			return sum + boost::icl::length(interval);
 		}
 	);

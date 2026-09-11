@@ -25,7 +25,6 @@ bool intervals_overlap(const std::pair<i64, i64>& one, const std::pair<i64, i64>
 std::pair<i64, i64> merge_intervals(const std::pair<i64, i64>& one, const std::pair<i64, i64>& two) noexcept
 {
 	std::pair<i64, i64> merged = { std::min(one.first, two.first), std::max(one.second, two.second) };
-	//std::cout << one << " U " << two << '\n';
 	return merged;
 }
 
@@ -49,9 +48,7 @@ int main(int argc, char* argv[])
 	do {
 		merged = false;
 		for (auto it = fresh_ranges.begin(); it != fresh_ranges.end() && !merged; ++it) {
-			//std::cout << *it << '\n';
 			for (auto jt = std::next(it); jt != fresh_ranges.end() && !merged; ++jt) {
-				//std::cout << "   " << *jt << '\n';
 				if (intervals_overlap(*it, *jt)) {
 					auto new_interval = merge_intervals(*it, *jt);
 					// jt > it always
@@ -65,15 +62,8 @@ int main(int argc, char* argv[])
 		}
 	} while (merged);
 
-	/*
-	std::cout << "Finally:" << '\n';
-	for (const auto& range : fresh_ranges) {
-		std::cout << range <<'\n';
-	}
-	*/
-
 	auto result = std::accumulate(
-		fresh_ranges.begin(), fresh_ranges.end(), 0ULL,
+		fresh_ranges.begin(), fresh_ranges.end(), i64{0},
 		[](i64 sum, const auto& range) {
 			return sum + range.second - range.first + 1;
 		}

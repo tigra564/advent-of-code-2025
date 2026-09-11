@@ -32,7 +32,7 @@ num_left_turns  = sorted(map(lambda s: len(s), re.findall("l+", (lrpath + lrpath
 print(f"Total turn:      {total_turn} ({'right' if total_turn > 0 else 'left'})")
 print(f"Max right turns: {num_right_turns}")
 print(f"Max left turns:  {num_left_turns}")
-print("Is M-convex:     ", end='')
+print("Is HV-convex:    ", end='')
 if total_turn > 0:
 	print(num_left_turns == 1 and num_right_turns <= 4)
 if total_turn < 0:

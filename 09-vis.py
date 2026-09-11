@@ -49,6 +49,6 @@ plt.plot(boxx, boxy, 'r-', linewidth=1) # red lines for the winning triangle
 plt.gca().invert_yaxis()
 
 plt.grid(True, linestyle='--', alpha=0.6)
-plt.title("Movie theater floor tiles countour")
+plt.title("Movie theater floor tiles contour")
 plt.axis('equal')  # set aspect ratio to 1
 plt.show()

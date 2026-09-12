@@ -85,7 +85,7 @@ std::ostream& operator<<(std::ostream& os, const Block& block)
 
 using Blocks = std::set<Block>;
 
-bool add_block(Blocks& blocks, const Block& block)
+bool add_block(Blocks& blocks, const Block& block) noexcept
 {
 	if (block.top < block.bottom)
 		return false;
@@ -93,7 +93,7 @@ bool add_block(Blocks& blocks, const Block& block)
 	return true;
 }
 
-bool intersects_blocks(const Blocks& blocks, const Block& block)
+bool intersects_blocks(const Blocks& blocks, const Block& block) noexcept
 {
 	for (const auto& b : blocks) {
 		if (block.left > b.right || block.right < b.left)

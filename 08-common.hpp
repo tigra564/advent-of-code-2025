@@ -25,7 +25,8 @@ struct jb_dist {
 	int first;
 	int second;
 
-	bool operator<(const jb_dist& other) const {
+	bool operator<(const jb_dist& other) const noexcept
+	{
 		if (distance != other.distance)
 			return distance < other.distance;
 		if (first != other.first)

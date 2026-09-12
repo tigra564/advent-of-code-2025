@@ -30,7 +30,7 @@ std::ostream& operator<<(std::ostream& os, const HSegment& segment)
 	return os;
 }
 
-using HSegments = std::set<HSegment>;
+using HSegments = std::vector<HSegment>;
 
 struct Block {
 	int left;
@@ -234,10 +234,11 @@ int main(int argc, char* argv[])
 	for (std::size_t t = 0; t < ntiles; t++) {
 		if (tiles[tprev][1] == tiles[t][1]) {
 			auto left_right = std::minmax(tiles[tprev][0], tiles[t][0]);
-			segs.emplace(HSegment{left_right.first, left_right.second, tiles[t][1]});
+			segs.emplace_back(HSegment{left_right.first, left_right.second, tiles[t][1]});
 		}
 		tprev = t;
 	}
+	std::sort(segs.begin(), segs.end());
 
 	Blocks blocks = form_blocks(segs);
 

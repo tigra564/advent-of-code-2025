@@ -1,48 +1,181 @@
-# Advent of Code 2025 solutions
+# Advent of Code 2025
 
 ## The Goal
 
-This repository contains solutions for [Advent of Code 2025](https://adventofcode.com/2025). The code is written in C++ using only what is provided by the compiler and the standard library. The goal was not to achieve maximum performance or fast delivery, but rather to prove whether it is possible to solve all the problems in a reasonable time without specialized tools.
+I have spent the last twenty years writing code in one language or another, and the last ten of them mostly managing people who write code. That is a long time to be away from the compiler. But I never stopped reading code. Every now and then a service goes down because a neighbouring report-generation service has eaten all the memory, and then it is not enough to manage people—you have to look at what they wrote.
 
-In fact, everything went smoothly and quickly until Part 2 of Day 9, which took me several evenings to solve. Part 2 of Day 10 took me one more evening than Part 2 of Day 9, which I spent studying integral linear programming techniques.
+I can read code in any C-like language: C++, Java, Go. I can judge whether it is efficient. What I was no longer sure about, by the time I started this mini-project, was whether I could propose a good fix—one written according to the current standards. So this repository is, to some extent, an educational project for myself as well.
 
-The code is written in a subset of C++ 17 supported by GCC v12.5.0. There are some alternative solutions that show how much easier, faster and generally more productive it is to use tools specifically designed for the problem at hand. These use Boost v1.74.0. That was the version available on my laptop when I created this repository. I didn't use any external linear programming libraries, so as not to bother those who might try to compile the code with additional dependencies. That's why there is no alternative solution for Part 2 of Day 10.
+**Why C++?**
 
-I started with quick-and-dirty approach to solving part 1, then I created the initial code for part 2 by copy-pasting. However, after getting all 24 stars, I took my time to polish the solutions a bit. Hence, files like `common.hpp` (used for all days) and `08-common.hpp` (specifically for Day 8) appeared.
+I last used C++ seriously around 2005. Back then it was a language of manual memory management, raw pointers, and a certain amount of prayer. Since then, I have written mostly plain C for performance-critical pieces and Python for individual utilities—which, in turn, led to bash handling far more than it probably should. There was also some Go, a bit of R, and more than a few DSLs that no longer exist. C++ was something I remembered as powerful but unfriendly.
 
-## Building and running
+It turned out that while I was away, C++ changed. Starting with C++11, the language began to turn toward the user. `auto`, move semantics, RVO/NRVO, lambdas, smart pointers—features that let you write code the way you would in a higher-level language, while keeping full control over the result. By C++17, I could write something like:
 
-Inside this directory:
-
-```sh
-mkdir build && cd build
-cmake ..
-make -j 24
+```cpp
+auto [left, right] = aoc::parse_pair<ull>(token);
 ```
 
-Each part of a day is solved by a separate binary, which takes a data file as its command-line argument. You can toss it your personal input file for the puzzle or use one of the samples provided in the repository.
+and it would just work. That is a remarkable simplification of the user interface. The language became closer to the people, the barrier to entry dropped, and yet the performance and control remained. That combination is what makes C++ attractive again.
 
-```sh
+**Why Advent of Code?**
+
+Because it is not a toy. The first few days are, I admit, simple. But by day 9 you are writing a 2-D rectangle-splitting algorithm, and by day 10 you are studying integer linear programming. These are not artificial puzzles. They are a representative sample of the algorithmic problems that an ordinary industrial programmer encounters, compressed into a format that fits in a single day.
+
+And that is the point. Most AoC problems reduce to well-known patterns. You do not need to invent a new sorting algorithm or a suffix tree. You need to recognize the shape of the problem and apply the right tool. That is what industrial programming actually is.
+
+So this repository is not a portfolio of "look how clever I am". It is a textbook answer key. AoC itself gives you no answers—only a check. My repository is the answers section at the end of the problem book. It is a support for learning, and the algorithms matter here even more than the language.
+
+**The principle of "good enough"**
+
+There is one rule I followed from day one, and it is perhaps the most important thing in this repository.
+
+The first part of every day is solved by brute force. Every single one. This is not laziness. It is a deliberate choice based on a simple observation: my time is more expensive than the CPU's time. If a brute-force solution runs in seconds and does not consume gigabytes, then it is the correct solution. Optimization without a reason is just a way to waste an evening.
+
+The switch to a smarter algorithm is justified only when the simple solution becomes unacceptable. In day 7, the direct approach would have taken hours. In day 9, the geometric approach required a real algorithm. That is when I stopped and thought. Not before.
+
+**Preparing for complexity**
+
+Starting from day 8, I began to suspect that the tasks would only get harder. The event gives you one day per puzzle. That is not a lot of time for debugging.
+
+So I started preparing my tooling in advance. Data structures that would be convenient to inspect. `operator<<` for the types I was going to print. In day 10 this led to some redundancy—I built structures I did not end up needing. But it also gave me confidence that when the real complexity arrived, I would have everything I needed to keep the process under control.
+
+The general rule with uncertainty: if there are signs that the problem will get worse, prepare the instruments before it does. Sometimes it is excessive. Often it is not.
+
+**On AI**
+
+I used AI in this project. Not everywhere, but in a few places, and I am not going to hide it.
+
+`09-2-boost.cpp` was generated by an AI. I had already solved the problem by hand, and the Boost.Geometry solution was obvious and boring, so I delegated it. The AI produced working code after three iterations. It is not elegant—the AI ran into integer overflow and I should have told it to use `i64` beforehand. I have not refactored that file yet, and I am saying so honestly.
+
+`CMakeLists.txt` was also generated by an AI, but that one I rewrote myself, because it affects the whole project and I wanted to understand every line.
+
+Here is the moral. AI can be useful even for producing a complete solution. But if you want code you can maintain, and if you want to understand its limitations, you must look inside what it generated. Then fix it to suit you. AI is a tool, not a replacement for an engineer.
+
+## The Repository
+
+Before we go any further, let me show you around.
+
+Each day lives in its own set of files. `NN-1.cpp` solves the first part, `NN-2.cpp` solves the second. `NN.txt.sample` is the example input from the puzzle statement. My personal input files used to sit next to them as `NN.txt`, but since nobody needs my input, I have removed them. The reasoning behind each solution is in `doc/day-NN.md`.
+
+Some days share common code. `common.hpp` and `common.cpp` hold utilities used across all days. Files like `08-common.hpp` or `10-common.hpp` are specific to a single day but kept separate because both parts need them. `ilp-solver.hpp` and `ilp-solver.cpp` implement an integer linear programming solver for day 10—more on that later.
+
+**How I approached the puzzles**
+
+The first part of every day is solved by brute force. I have already explained why. What I have not explained is what happens next.
+
+When the second part arrives, the natural move is to copy the first solution and start from there. That is exactly what I did for the first half of the event. Copy, paste, modify. It worked surprisingly well. The code you see in this repository has been polished after the fact—before publication it was messier, and that is fine. A prototype is allowed to be messy.
+
+But even a prototype deserves a minimum of engineering culture. Meaningful variable names. Consistent indentation. Comments where the logic is not obvious. I kept to that rule from the start, and it paid off later when I had to refactor. In a real project, I would go further: throw away the first solution and build the second one on top of it properly. Here, with one day per puzzle, copy-paste was the pragmatic choice.
+
+**The answer key**
+
+Most Advent of Code repositories are just code. This one is a bit different, because the code is not the main point.
+
+The main point is in `doc/`. Every day has a write-up: what the puzzle asks, how I understood it (or misunderstood it, in at least one case), which approach I chose, and why. The write-ups are honest about dead ends. If I spent an evening going down a wrong path, that is in the document. If a solution is ugly but works, that is also in the document.
+
+Advent of Code gives you no answers—only a check. This repository is the answers section at the end of the problem book. It is not a replacement for solving the puzzles yourself. It is a support for when you are stuck, or when you want to see how someone else thought about the problem.
+
+**Two solutions, two philosophies**
+
+For some days, there are two versions of the second part. One uses only the C++ standard library. The other uses Boost—specifically Boost.Geometry for day 9. The alternative is not there to show off. It is there to show how much easier the problem becomes when you use a tool built for it, and how much you have to do yourself when you cannot.
+
+There is no Boost alternative for day 10, and the reason is practical: the library I would have used is not in the Debian repositories, and I did not want to make people install third-party dependencies just to compile an educational project. The write-up for day 10 will mention which libraries would help and why they are not here.
+
+**The hard days**
+
+Most days are ordinary. You read the puzzle, you recognize the pattern, you write the code. Days 9 and 10 are different.
+
+Day 9 is a geometry problem that looks simple and turns out not to be. The straightforward approach fails on the real input. I went through several wrong ideas before arriving at a working algorithm. The write-ups for days 9 and 10 are substantially longer than the rest—for day 9, there is a proper drama unfolding as I stumble from one wrong idea to another.
+
+Day 10 is an integer linear programming problem. I had not studied ILP before, so I spent an evening reading about it and then wrote my own solver. It is not a general-purpose ILP library. It is a small, focused tool that solves the problem at hand. The distinction matters, and the write-up explains it.
+
+These two days are why I say the puzzles are not toys. They are the reason this project was worth doing.
+
+**On error handling**
+
+The code in this repository assumes that the input is correct. It does not validate every line, it does not check for missing fields, and it does not try to recover from malformed data. This is deliberate. Advent of Code guarantees well-formed input, and the purpose of this project is to study algorithms and the language, not to write defensive code that will never be exercised. Adding error handling everywhere would triple the size of the repository and obscure the parts that actually matter.
+
+There is one exception. The command-line arguments are checked, and the file is checked for readability, because those are provided by the user, and the user makes no guarantees at all. This is the only place where the code stops and complains instead of pressing on.
+
+The same principle applies to individual days. From day 10 onward, I assume not only that the input is correct, but also that every line has a unique valid solution. The algorithm relies on this. If a line had no solution or several, it could break. The checks on the input data are minimal, and that is a conscious choice.
+
+## Daily Write-ups
+
+[Day 1](doc/day-01.md) · [Day 2](doc/day-02.md) · [Day 3](doc/day-03.md) · [Day 4](doc/day-04.md) · [Day 5](doc/day-05.md) · [Day 6](doc/day-06.md) · [Day 7](doc/day-07.md) · [Day 8](doc/day-08.md) · [Day 9](doc/day-09.md) · [Day 10](doc/day-10.md) · [Day 11](doc/day-11.md) · [Day 12](doc/day-12.md)
+
+## Who This Is For
+
+This repository is for three kinds of people, and I will be honest about which of them I had in mind when I wrote it.
+
+The first is someone learning C++ or algorithms. Advent of Code is a good teacher, but it is a strict one: it tells you whether your answer is right and nothing else. It does not show you how to get there. This repository is the missing half—not a replacement for solving the puzzles yourself, but a reference for when you are stuck, or when you want to compare your solution to someone else's. I have tried to make the write-ups in `doc/` useful in that way. They explain the thinking, not just the code.
+
+The second is someone who has been away from the language for a while and is wondering whether it is worth coming back. I was that person. Before I started this project, I went through Scott Meyers's *Effective Modern C++*—the book covering C++11 and C++14—and I recommend the same to anyone in this position. Read first, then practice. By the time I reached day 9, the language was no longer the difficulty. Day 9 and everything after it are about algorithms, not about C++.
+
+The third kind is harder to describe. It is someone who wants to see how another engineer thinks about a problem—not the polished result, but the process. The wrong turns, the abandoned approaches, the moment when the real algorithm finally appears. This is what the write-ups are for: working notes, made public.
+
+A few principles I followed from the start, in case they are useful.
+
+**Do not optimize what does not need optimizing.** This is the lesson of every first part in this repository. Brute force is not a sin. It is a tool. If it works in seconds, it is the right answer. The time you save by not writing a clever algorithm is time you can spend on a problem that actually needs one.
+
+**Keep the prototype readable.** The code here was written fast, then polished. But even the fast version followed basic rules: meaningful names, consistent formatting, comments where the logic was not obvious. A prototype is allowed to be ugly. It is not allowed to be unreadable, because you will have to come back to it.
+
+**Prepare before the problem gets harder.** From day 8 onward, I started building tools I was not sure I would need. In day 10 that turned out to be overkill. In day 9 it saved me an evening. The general rule with uncertainty: if there are signs that the problem will get worse, prepare the instruments before it does.
+
+**Use AI, but look inside.** I have already said this in [The Goal](#the-goal), and I will not repeat the details. The short version: an AI can write a solution that works. It cannot write a solution you can maintain. That part is still yours.
+
+If you are none of these three people, that is fine too. The code is here, the write-ups are here. Take what you need.
+
+## Building and Running
+
+**Prerequisites**
+
+The code is written in C++17 and compiled with GCC 12.5.0. You will need:
+
+- **Compiler:** GCC 12 or newer, or Clang 15 or newer (any compiler with full C++17 support will do).
+- **Build system:** CMake 3.16 or higher.
+- **Version control:** Git (if you want to clone the repository).
+- **Boost libraries:** Boost 1.74.0 or higher—only needed for the alternative solutions (days 5 and 9).
+
+On Debian or Ubuntu, the following command installs everything at once:
+
+```bash
+sudo apt update
+sudo apt install build-essential cmake git libboost-all-dev
+```
+
+The `build-essential` package pulls in GCC, G++, and Make. `libboost-all-dev` installs the Boost development headers and libraries.
+
+On Red Hat, Fedora, or their derivatives, use `dnf` (or `yum` on older systems):
+
+```bash
+sudo dnf install gcc-c++ make cmake git boost-devel
+```
+
+For a minimal build without the Boost alternative, you can drop `boost-devel` and remove `09-2-boost.cpp` and `05-2-boost.cpp` from the build.
+
+If you are on a different distribution, use your package manager to install the equivalent packages. The names may vary, but the set is the same: a C++17 compiler, CMake, Git, and the Boost development files.
+
+**Building**
+
+```bash
+mkdir build && cd build
+cmake ..
+make -j 16
+```
+
+**Running**
+
+Each part of a day is solved by a separate binary. The binary takes a data file as its command-line argument. You can use your own input file for the puzzle, or one of the samples provided in the repository.
+
+```bash
 ./09-2 ../09.txt.sample
 ```
 
 or
 
-```sh
+```bash
 ./09-2 ../09.txt
 ```
 
-## Links to documentation for daily solutions
-
-[Day 1](doc/day-01.md)
-[Day 2](doc/day-02.md)
-[Day 3](doc/day-03.md)
-[Day 4](doc/day-04.md)
-[Day 5](doc/day-05.md)
-[Day 6](doc/day-06.md)
-[Day 7](doc/day-07.md)
-[Day 8](doc/day-08.md)
-[Day 9](doc/day-09.md)
-[Day 10](doc/day-10.md)
-[Day 11](doc/day-11.md)
-[Day 12](doc/day-12.md)
+The binaries are named `NN-1` and `NN-2`, where `NN` is the day number.

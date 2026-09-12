@@ -35,10 +35,14 @@ add_executable(08-2 08-2.cpp common.cpp 08-common.cpp)
 
 add_executable(09-1 09-1.cpp common.cpp)
 add_executable(09-2 09-2.cpp common.cpp)
+add_executable(09-2-debug 09-2.cpp common.cpp)
+target_compile_definitions(09-2-debug PRIVATE AOC_DEBUG)
 add_executable(09-2-boost 09-2-boost.cpp)
 
 add_executable(10-1 10-1.cpp common.cpp 10-common.cpp)
 add_executable(10-2 10-2.cpp common.cpp 10-common.cpp ilp-solver.cpp)
+add_executable(10-2-debug 10-2.cpp common.cpp 10-common.cpp ilp-solver.cpp)
+target_compile_definitions(10-2-debug PRIVATE AOC_DEBUG)
 
 add_executable(11-1 11-1.cpp common.cpp 11-common.cpp)
 add_executable(11-2 11-2.cpp common.cpp 11-common.cpp)

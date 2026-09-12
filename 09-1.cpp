@@ -1,4 +1,6 @@
 #include <array>
+#include <algorithm>
+#include <cmath>
 
 #include "common.hpp"
 
@@ -14,16 +16,13 @@ int main(int argc, char* argv[])
 	Tiles tiles;
 
 	while (file >> record) {
-		//std::cout << record << '\n';
-
 		auto [t0, t1] = aoc::parse_pair<int>(record, ",");
 		tiles.emplace_back(Tile{t0, t1});
 	}
-	//std::cout << '\n';
 
 	auto ntiles = tiles.size();
 
-	i64 result = 0;
+	auto result = i64{0};
 	for (std::size_t i = 0; i < ntiles; i++) {
 		for (std::size_t j = i+1; j < ntiles; j++) {
 			auto area =

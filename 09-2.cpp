@@ -5,6 +5,8 @@
 
 #include "common.hpp"
 
+//#define AOC_DEBUG
+
 using Tile = std::array<int, 2>;
 using Tiles = std::vector<Tile>;
 
@@ -119,10 +121,12 @@ Blocks form_blocks(const HSegments& segs)
 	};
 	Blocks blocks_fixed;
 	for (const auto& s : segs) {
+		#ifdef AOC_DEBUG
 		std::cout << s << '\n';
+		#endif
 
 		Blocks blocks_cont;
-		// We''ll fix left and right boundaries in the end of the loop below
+		// We'll fix left and right boundaries in the end of the loop below
 		Block block_new = {
 			std::numeric_limits<int>::max(),
 			std::numeric_limits<int>::min(),
@@ -132,10 +136,7 @@ Blocks form_blocks(const HSegments& segs)
 		};
 
 		for (auto b = blocks.begin(); b != blocks.end();) {
-			//std::cout << *b << '\n';
-
 			auto sections = b->get_sections(s);
-			//std::cout << "<" << sections.first << "," << sections.second << ">" << '\n';
 
 			if (sections.first == -1) {
 				++b;
@@ -147,6 +148,7 @@ Blocks form_blocks(const HSegments& segs)
 
 			Block block_left, block_right, block_fixed;
 			bool added_left = false, added_right = false, added_fixed = false;
+			(void) added_fixed;
 
 			if (new_left > b->left) {
 				block_left = {
@@ -162,7 +164,7 @@ Blocks form_blocks(const HSegments& segs)
 				added_right = add_block(blocks_cont, block_right);
 			}
 
-			if (true) {
+			{
 				block_fixed = {
 					added_left ? block_left.right + 1 : new_left,
 					added_right ? block_right.left - 1: new_right,
@@ -173,6 +175,7 @@ Blocks form_blocks(const HSegments& segs)
 				added_fixed = add_block(blocks_fixed, block_fixed);
 			}
 
+			#ifdef AOC_DEBUG
 			std::cout << "  " << *b << " -> <";
 			if (added_left)
 				std::cout << block_left;
@@ -183,6 +186,7 @@ Blocks form_blocks(const HSegments& segs)
 			if (added_right)
 				std::cout << block_right;
 			std::cout << ">" << '\n';
+			#endif
 
 			block_new.left = std::min(block_new.left, block_fixed.left);
 			block_new.right = std::max(block_new.right, block_fixed.right);
@@ -195,10 +199,13 @@ Blocks form_blocks(const HSegments& segs)
 		blocks.insert(blocks_cont.begin(), blocks_cont.end());
 
 		bool added_new = add_block(blocks, block_new);
+		(void) added_new;
+
+		#ifdef AOC_DEBUG
 		if (added_new)
 			std::cout << "  <= " << block_new << '\n';
-	
 		std::cout << '\n';
+		#endif
 	}
 
 	// Add few remaining blocks left in "blocks" container
@@ -234,9 +241,11 @@ int main(int argc, char* argv[])
 
 	Blocks blocks = form_blocks(segs);
 
+	#ifdef AOC_DEBUG
 	for (const auto& b : blocks)
 		std::cout << b << '\n';
 	std::cout << '\n';
+	#endif
 
 	Blocks blocks_out;
 	std::copy_if(blocks.begin(), blocks.end(),
@@ -259,7 +268,9 @@ int main(int argc, char* argv[])
 				static_cast<i64>(b.right - b.left + 1) *
 				static_cast<i64>(b.top - b.bottom + 1);
 
+			#ifdef AOC_DEBUG
 			std::cout << (fits ? "* " : "  ") << b << " " << area << '\n';
+			#endif
 
 			if (!fits)
 				continue;
@@ -271,10 +282,12 @@ int main(int argc, char* argv[])
 		[](const auto& a, const auto& b) {return a.second > b.second;}
 	);
 
+	#ifdef AOC_DEBUG
 	const Block& win = areas[0].first;
 	std::cout << "Winner: " << win << '\n';
 	// This is suitable format for visualizer
 	std::cout << win.left << " " << win.bottom << " " << win.right << " " << win.top << '\n';
+	#endif
 
 	auto result = areas[0].second;
 	std::cout << "Result: " << result << '\n';

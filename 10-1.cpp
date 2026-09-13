@@ -1,16 +1,16 @@
 #include "10-common.hpp"
 
-std::pair<unsigned int, int> get_num_toggles(const Machine& machine)
+std::pair<unsigned int, int> get_num_toggles(const Machine& machine) noexcept
 {
 	const auto& buttons = machine.buttons;
 	std::pair<unsigned int, int> result = {0, buttons.size()+1};
 
-	for (auto v = 0; v < 1 << buttons.size(); v++) {
+	for (auto v = 0U; v < 1U << buttons.size(); v++) {
 		auto inds = machine.indicators;
 		auto nbuttons = 0;
 
 		for (std::size_t i = 0; i < buttons.size(); i++) {
-			if (v & (1 << i)) {
+			if (v & (1U << i)) {
 				inds ^= buttons[i];
 				nbuttons++;
 			}
@@ -35,13 +35,9 @@ int main(int argc, char* argv[])
 		machines.emplace_back(Machine(record));
 	}
 
-	//for (const auto& m : machines)
-	//	std::cout << m << '\n';
-
-	auto result = 0ULL;
+	auto result = i64{0};
 	for (const auto& m : machines) {
 		auto r = get_num_toggles(m);
-		//std::cout << r.first << " " << r.second << '\n';
 		result += r.second;
 	}
 

@@ -12,15 +12,16 @@ Machine::Machine(const std::string& record)
 			num_inds = item.size() - 2;
 			for (std::size_t i = 0; i < num_inds; i++) {
 				if (item[i+1] == '#')
-					indicators |= 1 << i;
+					indicators |= 1U << i;
 			}
 			break;
 		case '(': {
 			unsigned int button = 0;
-			// we rightfully assume that button spec consist of digits, not numbers
+			// We rightfully assume that button spec consist of digits, not numbers.
+			// And we don't care about ')' and whatnot, only digits.
 			for (const auto& c : item) {
 				if ('0' <= c && c <= '9')
-					button |= 1 << (c - '0');
+					button |= 1U << (c - '0');
 			}
 			buttons.emplace_back(button);
 			break;
@@ -29,7 +30,7 @@ Machine::Machine(const std::string& record)
 			std::stringstream bs(item.substr(1, item.size()-1));
 			std::string token;
 			while (std::getline(bs, token, ','))
-				joltages.emplace_back(std::stoi(token));
+				joltages.emplace_back(std::stoul(token));
 			break;
 			}
 		}

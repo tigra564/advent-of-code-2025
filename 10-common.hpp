@@ -2,10 +2,6 @@
 #define AOC_10_COMMON_HPP
 
 #include <sstream>
-#include <functional>
-#include <numeric>
-#include <algorithm>
-#include <limits>
 
 #include "common.hpp"
 
@@ -18,13 +14,6 @@ struct Machine {
 	std::vector<unsigned int> joltages;
 
 	Machine() = default;
-	// support moving
-	Machine(Machine&&) = default;
-	Machine& operator=(Machine&&) = default;
-	// support copying
-	Machine(const Machine&) = default;
-	Machine& operator=(const Machine&) = default;
-
 	Machine(const std::string& record);
 };
 

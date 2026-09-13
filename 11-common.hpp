@@ -1,8 +1,6 @@
 #ifndef AOC_11_COMMON_HPP
 #define AOC_11_COMMON_HPP
 
-#include <sstream>
-
 #include "common.hpp"
 
 using Connections = std::map<std::string, std::set<std::string>>;

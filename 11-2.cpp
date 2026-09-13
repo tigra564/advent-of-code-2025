@@ -11,7 +11,7 @@ struct PathInfo {
 
 std::ostream& operator<<(std::ostream& os, const PathInfo& info)
 {
-	std::cout
+	os
 		<< "empty: " << info.count_empty
 		<< ", dac: " << info.count_dac
 		<< ", fft: " << info.count_fft
@@ -27,7 +27,7 @@ int main(int argc, char* argv[])
 
 	std::map<std::string, PathInfo> node_paths;
 
-	std::function< PathInfo(std::set<std::string>, const std::string&) > count_paths;
+	std::function<PathInfo(std::set<std::string>, const std::string&)> count_paths;
 	count_paths = [
 		&connections, &node_paths, &count_paths
 	](std::set<std::string> nodes_visited, const std::string from)
@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
 		if (from == "out")
 			return PathInfo{1, 0, 0, 0};
 
-		auto [visited_it, visited_inserted] = nodes_visited.insert(from);
+		auto visited_inserted = nodes_visited.insert(from).second;
 		// Node already visited
 		if (!visited_inserted)
 			return PathInfo{0, 0, 0, 0};
@@ -49,11 +49,9 @@ int main(int argc, char* argv[])
 			// Return cached result
 			return node_paths_it->second;
 
-		PathInfo new_info = {0, 0, 0, 0};
-		//std::cout << "FROM: " << from << '\n';
+		PathInfo new_info{};
 		for (const auto& to : connections[from]) {
 			auto info = count_paths(nodes_visited, to);
-			//std::cout << "<- " << info << '\n';
 
 			if (from == "dac") {
 				new_info.count_dac	+= info.count_dac + info.count_empty;
@@ -70,7 +68,6 @@ int main(int argc, char* argv[])
 		}
 
 		node_paths_it->second = new_info;
-		//std::cout << new_info << '\n';
 		return new_info;
 	};
 

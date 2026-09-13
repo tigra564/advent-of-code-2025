@@ -8,17 +8,17 @@ int main(int argc, char* argv[])
 
 	Connections connections = parse_connections(file);
 
-	std::map<std::string, int> node_paths;
+	std::map<std::string, i64> node_paths;
 
-	std::function<int(std::set<std::string>, const std::string&)> count_paths;
+	std::function<i64(std::set<std::string>, const std::string&)> count_paths;
 	count_paths = [
 		&connections, &node_paths, &count_paths
-	](std::set<std::string> nodes_visited, const std::string from)
+	](std::set<std::string> nodes_visited, const std::string from) -> i64
 	{
 		if (from == "out")
 			return 1;
 
-		auto [visited_it, visited_inserted] = nodes_visited.insert(from);
+		auto visited_inserted = nodes_visited.insert(from).second;
 		// Node already visited
 		if (!visited_inserted)
 			return 0;
@@ -32,7 +32,7 @@ int main(int argc, char* argv[])
 			// Return cached result
 			return node_paths_it->second;
 
-		int count = 0;
+		i64 count = 0;
 		for (const auto& to : connections[from]) {
 			count += count_paths(nodes_visited, to);
 		}

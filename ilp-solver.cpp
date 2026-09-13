@@ -32,7 +32,7 @@ static void scale_down(std::vector<int>& line)
 {
 	auto ncols = line.size();
 
-	// Scale row so that basis variable coefficient is 1.  If possible.
+	// Scale row so that basic variable coefficient is 1.  If possible.
 	// In any case its sign must be positive.
 	std::size_t col = 0;
 	for (; col < ncols; col++) {
@@ -61,7 +61,7 @@ static int gauss_forward_step(Matrix& matrix, int row, int col)
 
 	// We start from <row,col> and search downwards for the minimum
 	// non-zero cell (equal to +-1 ideally).  If there is no such a cell
-	// then the variable with index equal to row is not a basis one.  Thus
+	// then the variable with index equal to row is not a basic one.  Thus
 	// we must continue with the next column starting again with the row
 	// supplied by the caller. Sooner or later we'll find something since
 	// our firther steps guarantee that all rows are not empty.
@@ -128,7 +128,7 @@ static int gauss_forward_step(Matrix& matrix, int row, int col)
 }
 
 
-static int equalize_basis(Matrix& problem)
+static int equalize_basic(Matrix& problem)
 {
 	std::set<int> factors;
 	std::vector<int> factors_initial;
@@ -228,16 +228,16 @@ static std::vector<int> find_bounds(const Matrix& free_vars)
 }
 
 
-static std::vector<int> fix_free_vars(Matrix& free_vars, int basis_factor)
+static std::vector<int> fix_free_vars(Matrix& free_vars, int basic_factor)
 {
 	auto num_vars = free_vars[0].size() - 1;
 	// In the specific case of our riddle the objective function is
 	// x_1 + x_2 + ... + x_n, i.e. every variable is counted once. Hence
 	// initialization with 1's.
-	// But this is true if basis variables equal 1. Otherwise we have to
+	// But this is true if basic variables equal 1. Otherwise we have to
 	// account for this initializing all objective coefficients with
-	// basis_factor.
-	std::vector<int> objective_coeffs(num_vars, basis_factor);
+	// basic_factor.
+	std::vector<int> objective_coeffs(num_vars, basic_factor);
 
 	for (const auto& line : free_vars) {
 		for (std::size_t c = 0; c < num_vars; c++) {
@@ -255,7 +255,7 @@ static std::vector<int> fix_free_vars(Matrix& free_vars, int basis_factor)
 
 	std::function<void(const std::vector<int>&)> try_free_vars_combo;
 	try_free_vars_combo = [
-		num_vars, basis_factor,
+		num_vars, basic_factor,
 		&free_vars, &objective_coeffs, &bounds, &best_solution, &best_objective,
 		&try_free_vars_combo
 	](const std::vector<int>& values)
@@ -280,7 +280,7 @@ static std::vector<int> fix_free_vars(Matrix& free_vars, int basis_factor)
 			auto diff = line.back() - lhs;
 			if (0 > diff)
 				return;
-			if (diff % basis_factor)
+			if (diff % basic_factor)
 				return;
 		}
 
@@ -306,7 +306,7 @@ static std::vector<int> fix_free_vars(Matrix& free_vars, int basis_factor)
 
 std::vector<int> solve(Matrix problem)
 {
-	std::set<int> basis_var_poses, free_var_poses;
+	std::set<int> basic_var_poses, free_var_poses;
 
 	#ifdef AOC_DEBUG
 	std::cout << problem << '\n';
@@ -315,7 +315,7 @@ std::vector<int> solve(Matrix problem)
 	int col = 0;
 	for (std::size_t row = 0; row < problem.size(); row++) {
 		col = gauss_forward_step(problem, row, col);
-		basis_var_poses.emplace(col);
+		basic_var_poses.emplace(col);
 		col++;
 
 		#ifdef AOC_DEBUG
@@ -323,18 +323,18 @@ std::vector<int> solve(Matrix problem)
 		#endif
 	}
 
-	auto bfactor = equalize_basis(problem);
+	auto bfactor = equalize_basic(problem);
 
 	#ifdef AOC_DEBUG
 	std::cout << "Equalized:\n" << problem << '\n';
 	#endif
 
 	for (std::size_t c = 0; c < problem[0].size() - 1; c++)
-		if (basis_var_poses.find(c) == basis_var_poses.end())
+		if (basic_var_poses.find(c) == basic_var_poses.end())
 			free_var_poses.emplace(c);
 
 	#ifdef AOC_DEBUG
-	std::cout << "Basis variable positions: " << basis_var_poses << '\n';
+	std::cout << "Basic variable positions: " << basic_var_poses << '\n';
 	std::cout << "Free  variable positions: " << free_var_poses << '\n';
 	#endif
 
@@ -362,7 +362,7 @@ std::vector<int> solve(Matrix problem)
 		fv_pos++;
 	}
 	int row = 0;
-	for (const auto& bvp: basis_var_poses) {
+	for (const auto& bvp: basic_var_poses) {
 		int rhs = problem[row].back();
 		fv_pos = 0;
 		for (const auto& fvp : free_var_poses) {

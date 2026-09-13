@@ -89,6 +89,6 @@ struct KeyHash {
 
 **Complexity estimation**
 
-Without memoization, the number of paths grows exponentially, and the recursive tree would have *O*(2^*R*) nodes in the worst case. With memoization, each `(row, col)` pair is computed at most once. The number of distinct pairs is *O*(*R* × *C*), and each computation scans downwards from its starting row, which takes *O*(*R*) in the worst case. The overall complexity is *O*(*R*² × *C*). For the given input, this is fast enough.
+Without memoization, the number of paths grows exponentially, and the recursive tree would have *O*(2*ᴿ*) nodes in the worst case. With memoization, each `(row, col)` pair is computed at most once. The number of distinct pairs is *O*(*R* × *C*), and each computation scans downwards from its starting row, which takes *O*(*R*) in the worst case. The overall complexity is *O*(*R*² × *C*). For the given input, this is fast enough.
 
 [<< To Day 6](day-06.md)   [To Day 8 >>](day-08.md)

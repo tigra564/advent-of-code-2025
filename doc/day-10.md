@@ -202,6 +202,18 @@ We will address the following four topics later in this section:
 3. Fixing free variable values.
 4. Keeping it integer.
 
+Of course, we are not the first to face this problem. There are several mature open-source libraries for integer linear programming that we could have used instead of writing our own solver.
+
+**HiGHS** is arguably the best open-source option today. It provides simplex and interior point solvers for LP, MIP, and QP, and its performance [exceeds](https://maths.ed.ac.uk/research/data-decisions/optimization-and-operational-research/software) that of any other open-source linear optimization software in standard benchmarks. It is written in C++ and provides APIs for C, Python, Julia, and Rust, among others.
+
+**Google OR-Tools** is a mature library for combinatorial optimization that includes its own LP/MIP solvers. It is widely used for scheduling and routing problems, and provides a CP-SAT solver that is extremely [competitive](https://www.linkedin.com/posts/payamrv_in-operations-research-solver-choice-is-share-7379562339593015296-jqA3/) when solution speed matters more than guaranteed optimality proofs.
+
+**COIN-OR Cbc** is a solid open-source MILP solver that has been used in production for years. **GLPK** is another established option, particularly suitable for teaching and prototyping, though it can struggle with very large or complex problems. **SCIP** is a [well-regarded](https://ub01.uni-tuebingen.de/xmlui/bitstream/handle/10900/84296/Patrick%20Sittel%2C%20Thomas%20Schönwälder%2C%20Martin%20Kumm%20and%20Peter%20Zipf%09ScaLP%3A%20A%20Light-Weighted%20%28MI%29LP-Library.pdf?sequence=1&isAllowed=y#2#1) solver for both constraint and mixed-integer programming.
+
+For C++ specifically, **ScaLP** provides a lightweight wrapper that unifies several solvers (CPLEX, Gurobi, SCIP, LPSolve) behind a single interface. **PRINTEMPS** is a [header-only](https://github.com/snowberryfield/printemps) metaheuristics solver that requires no external dependencies.
+
+We deliberately did not use any of them. The reason is not that they are bad—they are excellent. The reason is that this repository is an educational project, and the point was to understand how an ILP solver works by building one. Using a library would have been the pragmatic choice for a production system, but it would have defeated the purpose of the exercise.
+
 ### Diagonalizing the problem matrix
 
 We iterate over the matrix rows, keeping track of the current column in which we search for a non-zero cell. We start at row 0, column 0. We search down the column for any non-zero cell. If the row found is below the current row, we swap these rows.

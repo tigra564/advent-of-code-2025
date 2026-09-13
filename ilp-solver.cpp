@@ -1,7 +1,12 @@
 #include <iomanip>
+#include <functional>
+#include <numeric>
+#include <algorithm>
+#include <limits>
 
 #include "ilp-solver.hpp"
 
+//#define AOC_DEBUG
 
 std::ostream& operator<<(std::ostream& os, const Matrix& matrix)
 {
@@ -14,9 +19,9 @@ std::ostream& operator<<(std::ostream& os, const Matrix& matrix)
 
 	for (const auto& row : matrix) {
 		for (const auto& cell : row) {
-			std::cout << std::setw(width + 1) << cell; 
+			os << std::setw(width + 1) << cell;
 		}
-		std::cout << '\n';
+		os << '\n';
 	}
 
 	return os;
@@ -177,7 +182,9 @@ static std::vector<int> find_bounds(const Matrix& free_vars)
 		}
 	}
 
+	#ifdef AOC_DEBUG
 	std::cout << "Bounds: " << bounds << '\n';
+	#endif
 
 	std::size_t unbounded;
 	for (unbounded = 0; unbounded < num_vars; unbounded++) {
@@ -213,7 +220,9 @@ static std::vector<int> find_bounds(const Matrix& free_vars)
 			line[b] = 0;
 		}
 	}
+	#ifdef AOC_DEBUG
 	std::cout << "New free variables\n" << new_free_vars << '\n';
+	#endif
 
 	return find_bounds(new_free_vars);
 }
@@ -235,7 +244,9 @@ static std::vector<int> fix_free_vars(Matrix& free_vars, int basis_factor)
 			objective_coeffs[c] -= line[c];
 		}
 	}
+	#ifdef AOC_DEBUG
 	std::cout << "Objective coeffs: " << objective_coeffs << '\n';
+	#endif
 
 	auto bounds = find_bounds(free_vars);
 
@@ -249,13 +260,10 @@ static std::vector<int> fix_free_vars(Matrix& free_vars, int basis_factor)
 		&try_free_vars_combo
 	](const std::vector<int>& values)
 	{
-		//std::cout << "Values: " << values << '\n';
-		
 		if (values.size() < num_vars) {
 			std::vector<int> new_values = values;
 			new_values.emplace_back(0);
 			auto var_pos = values.size();
-			//std::cout << "New values: " << new_values << '\n';
 			for (auto val = 0; val <= bounds[var_pos]; val++) {
 				new_values.back() = val;
 				try_free_vars_combo(new_values);
@@ -281,7 +289,6 @@ static std::vector<int> fix_free_vars(Matrix& free_vars, int basis_factor)
 			objective += objective_coeffs[v] * values[v];
 		}
 
-		//std::cout << "F = " << objective << '\n';
 		if (objective < best_objective) {
 			best_objective = objective;
 			best_solution = values;
@@ -289,7 +296,9 @@ static std::vector<int> fix_free_vars(Matrix& free_vars, int basis_factor)
 	};
 
 	try_free_vars_combo({});
+	#ifdef AOC_DEBUG
 	std::cout << best_objective << ": " << best_solution << '\n';
+	#endif
 
 	return best_solution;
 }
@@ -299,25 +308,35 @@ std::vector<int> solve(Matrix problem)
 {
 	std::set<int> basis_var_poses, free_var_poses;
 
+	#ifdef AOC_DEBUG
 	std::cout << problem << '\n';
+	#endif
 
 	int col = 0;
 	for (std::size_t row = 0; row < problem.size(); row++) {
 		col = gauss_forward_step(problem, row, col);
 		basis_var_poses.emplace(col);
 		col++;
+
+		#ifdef AOC_DEBUG
 		std::cout << problem << '\n';
+		#endif
 	}
 
 	auto bfactor = equalize_basis(problem);
+
+	#ifdef AOC_DEBUG
 	std::cout << "Equalized:\n" << problem << '\n';
+	#endif
 
 	for (std::size_t c = 0; c < problem[0].size() - 1; c++)
 		if (basis_var_poses.find(c) == basis_var_poses.end())
 			free_var_poses.emplace(c);
 
+	#ifdef AOC_DEBUG
 	std::cout << "Basis variable positions: " << basis_var_poses << '\n';
 	std::cout << "Free  variable positions: " << free_var_poses << '\n';
+	#endif
 
 	Matrix free_vars;
 	for (const auto& line : problem) {
@@ -330,7 +349,10 @@ std::vector<int> solve(Matrix problem)
 		free_line.emplace_back(line.back());
 		free_vars.emplace_back(free_line);
 	}
+
+	#ifdef AOC_DEBUG
 	std::cout << free_vars << '\n';
+	#endif
 
 	std::vector<int> fv_solution = fix_free_vars(free_vars, bfactor);
 	std::vector<int> solution(problem[0].size() - 1, 0);

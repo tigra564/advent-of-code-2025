@@ -1,5 +1,5 @@
-#ifndef ILP_SOLVER_HPP
-#define ILP_SOLVER_HPP
+#ifndef AOC_ILP_SOLVER_HPP
+#define AOC_ILP_SOLVER_HPP
 
 #include "10-common.hpp"
 
@@ -9,4 +9,4 @@ std::ostream& operator<<(std::ostream& os, const Matrix& matrix);
 
 std::vector<int> solve(Matrix problem);
 
-#endif //ILP_SOLVER_HPP
+#endif //AOC_ILP_SOLVER_HPP

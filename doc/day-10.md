@@ -81,7 +81,7 @@ For this puzzle, we have the following formulation. For illustration, let's take
 * Our [constraints](https://en.wikipedia.org/wiki/Constraint_(mathematics)) are:
   * The sum of the variables for buttons that affect a given joltage level must equal that level. For the first joltage level, this takes the form: 1·*x*₀ + 1·*x*₁ + 1·*x*₂ + 0·*x*₃ = 10. Here, pressing the fourth button does not affect the first joltage level, while pressing any of the other buttons increases it by one.
   * The values of the variables must be non-negative integers.
-* Our objective function is the minimization of the total number of presses: *x*₀ + *x*₁ + *x*₂ + *x*₄ → min.
+* Our objective function is the minimization of the total number of presses: *x*₀ + *x*₁ + *x*₂ + *x*₃ → min.
 
 Let's write this as a complete system of equations and inequalities:
 
@@ -220,7 +220,7 @@ We iterate over the matrix rows, keeping track of the current column in which we
 
 If no such row is found, this means that the column contains a free variable. That's because a variable cannot be basic if it has zero coefficients in all rows from the current one down—its value is unconstrained by those equations, so it is free. In this case, we increment the column number and start over.
 
-Eventually, we will either run out of rows or find a row containing a basic variable. In the latter case, we first divide all the values in the row by the GCD of its coefficients, so that the pivot becomes a positive integer. It is not necessarily 1, but it is the smallest positive integer we can get without introducing fractions. After that, we null out all the cells in the other rows for the current column. It's easy: we multiply the values of the current row by the coefficient in the target cell of the other row, and subtract the result from that other row.
+Eventually, we will either run out of rows or find a row containing a basic variable. In the latter case, we first divide all the values in the row by the [greatest common divisor (GCD)](https://en.wikipedia.org/wiki/Greatest_common_divisor) of its coefficients, so that the pivot becomes a positive integer. It is not necessarily 1, but it is the smallest positive integer we can get without introducing fractions. After that, we null out all the cells in the other rows for the current column. It's easy: we multiply the values of the current row by the coefficient in the target cell of the other row, and subtract the result from that other row.
 
 ```c++
 static int gauss_forward_step(Matrix& matrix, int row, int col)
@@ -408,7 +408,7 @@ We copy the diagonalized matrix and keep only the free variables and right-hand 
 
 (a linear combination of free variables) = right-hand side value − (the basic variable)
 
-the value of (right-hand side + basic variable) is maximized when that basic variable is zero. There must be at least one inequality that contains a free variable with a positive coefficient (the others being non-negative, i.e., at least zero). Otherwise, we could take arbitrarily large values for the free variables and still satisfy all equations. That would mean there is no optimal solution, but we assume there is one by the definition of the puzzle.
+the value of (right-hand side - basic variable) is maximized when that basic variable is zero. There must be at least one inequality that contains a free variable with a positive coefficient (the others being non-negative, i.e., at least zero). Otherwise, we could take arbitrarily large values for the free variables and still satisfy all equations. That would mean there is no optimal solution, but we assume there is one by the definition of the puzzle.
 
 Here comes the hardest part: in the example above, we used some mathematical reasoning on the inequalities to derive bounds for the free variables. Translating that reasoning into an algorithm is far from trivial. So instead of juggling inequalities, we use a coarse approach.
 
